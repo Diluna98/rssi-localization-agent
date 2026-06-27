@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Environments
+.venv/
+venv/
+.env
+
+# Generated project outputs
+data/
+artifacts/
+
+# Local/editor files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

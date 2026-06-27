@@ -1,0 +1,37 @@
+seed: 42
+
+environment:
+  width_m: 12.0
+  height_m: 10.0
+  anchors:
+    - [0.5, 0.5]
+    - [11.5, 0.5]
+    - [0.5, 9.5]
+    - [11.5, 9.5]
+    - [6.0, 5.0]
+
+rssi_model:
+  reference_rssi_dbm: -40.0
+  reference_distance_m: 1.0
+  path_loss_exponent: 2.2
+  noise_std_db: 3.0
+  min_distance_m: 0.25
+
+data:
+  train_samples: 12000
+  validation_samples: 2000
+  test_samples: 2000
+  output_dir: data/simulated
+
+training:
+  batch_size: 128
+  epochs: 50
+  learning_rate: 0.001
+  hidden_dims: [128, 128, 64]
+  dropout: 0.05
+  model_path: artifacts/model.pt
+  scaler_path: artifacts/scaler.npz
+
+evaluation:
+  metrics_path: artifacts/metrics.json
+  prediction_plot_path: artifacts/predictions.png
