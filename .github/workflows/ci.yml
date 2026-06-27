@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Test and smoke train
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Unit tests
+        run: pytest
+
+      - name: Simulate CI dataset
+        run: rssi-simulate --config configs/ci.yaml
+
+      - name: Train CI smoke model
+        run: rssi-train --config configs/ci.yaml
+
+      - name: Evaluate CI smoke model
+        run: rssi-evaluate --config configs/ci.yaml
+
+      - name: Upload CI artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-localization-artifacts
+          path: |
+            artifacts/ci/metrics.json
+            artifacts/ci/predictions.png
+          if-no-files-found: error

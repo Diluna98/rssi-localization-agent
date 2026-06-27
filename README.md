@@ -97,6 +97,20 @@ Run tests:
 pytest
 ```
 
+## Continuous Integration
+
+This repository uses GitHub Actions for CI. On every push or pull request to `main`, the workflow:
+
+- installs the package
+- runs Ruff linting
+- runs unit tests
+- generates a small deterministic CI dataset
+- trains a short smoke-test model
+- evaluates the smoke-test model
+- uploads CI metrics and prediction plots as workflow artifacts
+
+The CI workflow uses `configs/ci.yaml`, which is intentionally small so CI validates the pipeline without running a full experiment.
+
 ## Current Metrics
 
 After running evaluation, metrics are written to:
