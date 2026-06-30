@@ -97,6 +97,28 @@ Run tests:
 pytest
 ```
 
+## Docker
+
+Build the image:
+
+```powershell
+docker build -t rssi-localization-agent .
+```
+
+Run the default smoke command, which generates the small CI dataset:
+
+```powershell
+docker run --rm rssi-localization-agent
+```
+
+Run a specific project command:
+
+```powershell
+docker run --rm rssi-localization-agent rssi-simulate --config configs/ci.yaml
+```
+
+Generated data and artifacts are intentionally excluded from the image build context.
+
 ## Continuous Integration
 
 This repository uses GitHub Actions for CI. On every push or pull request to `main`, the workflow:
@@ -108,6 +130,7 @@ This repository uses GitHub Actions for CI. On every push or pull request to `ma
 - trains a short smoke-test model
 - evaluates the smoke-test model
 - uploads CI metrics and prediction plots as workflow artifacts
+- builds the Docker image
 
 The CI workflow uses `configs/ci.yaml`, which is intentionally small so CI validates the pipeline without running a full experiment.
 

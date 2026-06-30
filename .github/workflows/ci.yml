@@ -52,3 +52,22 @@ jobs:
             artifacts/ci/metrics.json
             artifacts/ci/predictions.png
           if-no-files-found: error
+
+  docker:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+    needs: quality
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: rssi-localization-agent:ci
