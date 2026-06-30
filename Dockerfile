@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11-slim AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -21,3 +21,16 @@ RUN mkdir -p /app/data /app/artifacts \
 USER app
 
 CMD ["rssi-simulate", "--config", "configs/ci.yaml"]
+
+FROM base AS test
+
+USER root
+
+COPY tests ./tests
+
+RUN python -m pip install ".[dev]" \
+    && chown -R app:app /app
+
+USER app
+
+CMD ["pytest"]

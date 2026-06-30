@@ -119,6 +119,13 @@ docker run --rm rssi-localization-agent rssi-simulate --config configs/ci.yaml
 
 Generated data and artifacts are intentionally excluded from the image build context.
 
+Build and run the container test target:
+
+```powershell
+docker build --target test -t rssi-localization-agent:test .
+docker run --rm rssi-localization-agent:test pytest
+```
+
 ## Continuous Integration
 
 This repository uses GitHub Actions for CI. On every push or pull request to `main`, the workflow:
@@ -130,7 +137,10 @@ This repository uses GitHub Actions for CI. On every push or pull request to `ma
 - trains a short smoke-test model
 - evaluates the smoke-test model
 - uploads CI metrics and prediction plots as workflow artifacts
-- builds the Docker image
+- builds a Docker test image
+- runs unit tests inside the container
+- runs the CI smoke pipeline inside the container
+- builds the runtime Docker image
 
 The CI workflow uses `configs/ci.yaml`, which is intentionally small so CI validates the pipeline without running a full experiment.
 
