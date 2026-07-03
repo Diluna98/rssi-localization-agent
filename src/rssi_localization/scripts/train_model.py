@@ -11,6 +11,7 @@ from rssi_localization.config import load_config
 from rssi_localization.data.dataset import RSSI_PREFIX, RssiLocalizationDataset, StandardScaler
 from rssi_localization.models.mlp import LocalizationMLP
 from rssi_localization.training.train import train_model
+from rssi_localization.tracking.mlflow_tracking import log_artifacts, log_history, mlflow_run
 
 
 def main() -> None:
@@ -47,20 +48,23 @@ def main() -> None:
         dropout=training_config["dropout"],
     )
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    history = train_model(
-        model=model,
-        train_loader=train_loader,
-        validation_loader=validation_loader,
-        epochs=training_config["epochs"],
-        learning_rate=training_config["learning_rate"],
-        device=device,
-    )
+    with mlflow_run(config, "train_run_name"):
+        history = train_model(
+            model=model,
+            train_loader=train_loader,
+            validation_loader=validation_loader,
+            epochs=training_config["epochs"],
+            learning_rate=training_config["learning_rate"],
+            device=device,
+        )
 
-    model_path = Path(training_config["model_path"])
-    scaler_path = Path(training_config["scaler_path"])
-    model_path.parent.mkdir(parents=True, exist_ok=True)
-    torch.save({"model_state_dict": model.state_dict(), "history": history}, model_path)
-    scaler.save(str(scaler_path))
+        model_path = Path(training_config["model_path"])
+        scaler_path = Path(training_config["scaler_path"])
+        model_path.parent.mkdir(parents=True, exist_ok=True)
+        torch.save({"model_state_dict": model.state_dict(), "history": history}, model_path)
+        scaler.save(str(scaler_path))
+        log_history(history)
+        log_artifacts([model_path, scaler_path])
 
     print(f"Saved model to {model_path}")
     print(f"Final validation loss: {history['validation_loss'][-1]:.4f}")

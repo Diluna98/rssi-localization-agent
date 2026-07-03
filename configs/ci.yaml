@@ -37,3 +37,11 @@ evaluation:
   prediction_plot_path: artifacts/ci/predictions.png
   error_heatmap_path: artifacts/ci/error_heatmap.png
   report_path: artifacts/ci/report.md
+
+tracking:
+  enabled: true
+  tracking_uri: sqlite:///mlflow.db
+  artifact_location: mlartifacts/ci
+  experiment_name: rssi-localization-ci
+  train_run_name: train-ci
+  evaluation_run_name: evaluate-ci

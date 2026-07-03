@@ -14,6 +14,9 @@ venv/
 # Generated project outputs
 /data/
 /artifacts/
+/mlruns/
+/mlartifacts/
+/mlflow.db*
 
 # Local/editor files
 .idea/

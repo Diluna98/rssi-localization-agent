@@ -18,6 +18,7 @@ from rssi_localization.training.evaluate import (
     write_experiment_report,
     write_metrics,
 )
+from rssi_localization.tracking.mlflow_tracking import log_artifacts, log_metrics, mlflow_run
 
 
 def main() -> None:
@@ -77,47 +78,58 @@ def main() -> None:
         "neural_network": summarize_errors(model_errors),
         "trilateration_baseline": summarize_errors(baseline_errors),
     }
-    write_metrics(metrics, config["evaluation"]["metrics_path"])
 
-    plot_input_path = Path(config["evaluation"]["prediction_plot_path"]).with_suffix(".npz")
-    plot_input_path.parent.mkdir(parents=True, exist_ok=True)
-    np.savez(
-        plot_input_path,
-        targets=targets,
-        predictions=model_predictions,
-        anchors=anchors,
-    )
-    subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "rssi_localization.visualization.plot_predictions_cli",
-            "--input",
-            str(plot_input_path),
-            "--output",
-            config["evaluation"]["prediction_plot_path"],
-        ],
-        check=True,
-    )
-    subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "rssi_localization.visualization.plot_error_heatmap_cli",
-            "--input",
-            str(plot_input_path),
-            "--output",
-            config["evaluation"]["error_heatmap_path"],
-        ],
-        check=True,
-    )
-    write_experiment_report(
-        metrics=metrics,
-        path=config["evaluation"]["report_path"],
-        config_path=args.config,
-        prediction_plot_path=config["evaluation"]["prediction_plot_path"],
-        error_heatmap_path=config["evaluation"]["error_heatmap_path"],
-    )
+    with mlflow_run(config, "evaluation_run_name"):
+        write_metrics(metrics, config["evaluation"]["metrics_path"])
+
+        plot_input_path = Path(config["evaluation"]["prediction_plot_path"]).with_suffix(".npz")
+        plot_input_path.parent.mkdir(parents=True, exist_ok=True)
+        np.savez(
+            plot_input_path,
+            targets=targets,
+            predictions=model_predictions,
+            anchors=anchors,
+        )
+        subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "rssi_localization.visualization.plot_predictions_cli",
+                "--input",
+                str(plot_input_path),
+                "--output",
+                config["evaluation"]["prediction_plot_path"],
+            ],
+            check=True,
+        )
+        subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "rssi_localization.visualization.plot_error_heatmap_cli",
+                "--input",
+                str(plot_input_path),
+                "--output",
+                config["evaluation"]["error_heatmap_path"],
+            ],
+            check=True,
+        )
+        write_experiment_report(
+            metrics=metrics,
+            path=config["evaluation"]["report_path"],
+            config_path=args.config,
+            prediction_plot_path=config["evaluation"]["prediction_plot_path"],
+            error_heatmap_path=config["evaluation"]["error_heatmap_path"],
+        )
+        log_metrics(metrics)
+        log_artifacts(
+            [
+                config["evaluation"]["metrics_path"],
+                config["evaluation"]["prediction_plot_path"],
+                config["evaluation"]["error_heatmap_path"],
+                config["evaluation"]["report_path"],
+            ]
+        )
     print(metrics)
 
 

@@ -91,6 +91,18 @@ Evaluate the trained model and the trilateration baseline:
 python scripts/evaluate_model.py --config configs/default.yaml
 ```
 
+View tracked experiments with MLflow:
+
+```powershell
+mlflow ui --backend-store-uri sqlite:///mlflow.db
+```
+
+Then open:
+
+```text
+http://127.0.0.1:5000
+```
+
 Run tests:
 
 ```powershell
@@ -143,6 +155,42 @@ This repository uses GitHub Actions for CI. On every push or pull request to `ma
 - builds the runtime Docker image
 
 The CI workflow uses `configs/ci.yaml`, which is intentionally small so CI validates the pipeline without running a full experiment.
+
+## Experiment Tracking
+
+Training and evaluation runs are tracked with MLflow. By default, run metadata is written to a local SQLite backend store:
+
+```text
+mlflow.db
+```
+
+Run artifacts are written to:
+
+```text
+mlartifacts/
+```
+
+The project logs:
+
+- configuration parameters
+- training and validation loss per epoch
+- saved model and scaler artifacts
+- evaluation metrics for the neural network and trilateration baseline
+- prediction plot
+- error heatmap
+- experiment report
+
+Tracking is configured in each YAML file:
+
+```yaml
+tracking:
+  enabled: true
+  tracking_uri: sqlite:///mlflow.db
+  artifact_location: mlartifacts
+  experiment_name: rssi-localization
+```
+
+`mlflow.db`, `mlruns/`, and `mlartifacts/` are intentionally ignored by Git because they are generated experiment state.
 
 ## Results
 
