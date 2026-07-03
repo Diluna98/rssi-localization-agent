@@ -15,6 +15,7 @@ from rssi_localization.simulation.rssi_model import LogDistanceRssiModel
 from rssi_localization.training.evaluate import (
     localization_errors,
     summarize_errors,
+    write_experiment_report,
     write_metrics,
 )
 
@@ -97,6 +98,25 @@ def main() -> None:
             config["evaluation"]["prediction_plot_path"],
         ],
         check=True,
+    )
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "rssi_localization.visualization.plot_error_heatmap_cli",
+            "--input",
+            str(plot_input_path),
+            "--output",
+            config["evaluation"]["error_heatmap_path"],
+        ],
+        check=True,
+    )
+    write_experiment_report(
+        metrics=metrics,
+        path=config["evaluation"]["report_path"],
+        config_path=args.config,
+        prediction_plot_path=config["evaluation"]["prediction_plot_path"],
+        error_heatmap_path=config["evaluation"]["error_heatmap_path"],
     )
     print(metrics)
 

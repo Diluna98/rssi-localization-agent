@@ -152,6 +152,16 @@ After running evaluation, metrics are written to:
 artifacts/metrics.json
 ```
 
+The standard experiment output bundle is:
+
+```text
+artifacts/
+  metrics.json
+  predictions.png
+  error_heatmap.png
+  report.md
+```
+
 The main metric is localization error in meters:
 
 - mean error

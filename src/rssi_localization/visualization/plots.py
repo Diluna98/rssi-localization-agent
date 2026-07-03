@@ -33,3 +33,37 @@ def plot_predictions(
     plt.tight_layout()
     plt.savefig(output_path, dpi=160)
     plt.close()
+
+
+def plot_error_heatmap(
+    targets: np.ndarray,
+    predictions: np.ndarray,
+    anchors: np.ndarray,
+    output_path: str | Path,
+    gridsize: int = 18,
+) -> None:
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    errors = np.linalg.norm(predictions - targets, axis=1)
+
+    plt.figure(figsize=(8, 6))
+    heatmap = plt.hexbin(
+        targets[:, 0],
+        targets[:, 1],
+        C=errors,
+        reduce_C_function=np.mean,
+        gridsize=gridsize,
+        cmap="magma",
+        mincnt=1,
+    )
+    plt.scatter(anchors[:, 0], anchors[:, 1], s=90, marker="^", color="#2ca02c", label="anchors")
+    colorbar = plt.colorbar(heatmap)
+    colorbar.set_label("mean localization error (m)")
+    plt.xlabel("x position (m)")
+    plt.ylabel("y position (m)")
+    plt.title("RSSI localization error heatmap")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=160)
+    plt.close()

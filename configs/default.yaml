@@ -35,3 +35,5 @@ training:
 evaluation:
   metrics_path: artifacts/metrics.json
   prediction_plot_path: artifacts/predictions.png
+  error_heatmap_path: artifacts/error_heatmap.png
+  report_path: artifacts/report.md

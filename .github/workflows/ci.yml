@@ -51,6 +51,8 @@ jobs:
           path: |
             artifacts/ci/metrics.json
             artifacts/ci/predictions.png
+            artifacts/ci/error_heatmap.png
+            artifacts/ci/report.md
           if-no-files-found: error
 
   docker:
