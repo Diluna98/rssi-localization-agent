@@ -109,6 +109,37 @@ Run tests:
 pytest
 ```
 
+## API
+
+Start the FastAPI service:
+
+```powershell
+rssi-api --host 0.0.0.0 --port 8000
+```
+
+Check service health:
+
+```powershell
+curl http://127.0.0.1:8000/health
+```
+
+Send an RSSI prediction request:
+
+```powershell
+curl -X POST http://127.0.0.1:8000/predict `
+  -H "Content-Type: application/json" `
+  -d "{\"rssi_dbm\": [-61, -74, -68, -82, -57]}"
+```
+
+The API loads model artifacts from `configs/default.yaml` by default. Override paths with:
+
+```text
+RSSI_CONFIG_PATH
+RSSI_MODEL_PATH
+RSSI_SCALER_PATH
+RSSI_DEVICE
+```
+
 ## Docker
 
 Build the image:
@@ -117,10 +148,10 @@ Build the image:
 docker build -t rssi-localization-agent .
 ```
 
-Run the default smoke command, which generates the small CI dataset:
+Run the API container:
 
 ```powershell
-docker run --rm rssi-localization-agent
+docker run --rm -p 8000:8000 rssi-localization-agent
 ```
 
 Run a specific project command:

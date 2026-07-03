@@ -20,7 +20,9 @@ RUN mkdir -p /app/data /app/artifacts \
 
 USER app
 
-CMD ["rssi-simulate", "--config", "configs/ci.yaml"]
+EXPOSE 8000
+
+CMD ["uvicorn", "rssi_localization.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
 
 FROM base AS test
 
