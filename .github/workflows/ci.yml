@@ -1,13 +1,15 @@
-name: CI
+name: CI/CD
 
 on:
   push:
     branches: ["main"]
+    tags: ["v*"]
   pull_request:
     branches: ["main"]
 
 permissions:
   contents: read
+  packages: write
 
 jobs:
   quality:
@@ -93,3 +95,42 @@ jobs:
           target: base
           push: false
           tags: rssi-localization-agent:ci
+
+  publish:
+    name: Publish Docker image
+    runs-on: ubuntu-latest
+    needs: docker
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate image metadata
+        id: metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/diluna98/rssi-localization-agent
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,prefix=sha-
+            type=ref,event=tag
+
+      - name: Build and publish runtime image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: base
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}

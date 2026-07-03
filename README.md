@@ -169,9 +169,9 @@ docker build --target test -t rssi-localization-agent:test .
 docker run --rm rssi-localization-agent:test pytest
 ```
 
-## Continuous Integration
+## CI/CD
 
-This repository uses GitHub Actions for CI. On every push or pull request to `main`, the workflow:
+This repository uses GitHub Actions for CI/CD. On every push or pull request to `main`, the workflow:
 
 - installs the package
 - runs Ruff linting
@@ -184,6 +184,21 @@ This repository uses GitHub Actions for CI. On every push or pull request to `ma
 - runs unit tests inside the container
 - runs the CI smoke pipeline inside the container
 - builds the runtime Docker image
+
+On pushes to `main`, the workflow publishes the runtime image to GitHub Container Registry:
+
+```text
+ghcr.io/diluna98/rssi-localization-agent:latest
+ghcr.io/diluna98/rssi-localization-agent:sha-<commit>
+```
+
+On version tags such as `v0.1.0`, the workflow also publishes:
+
+```text
+ghcr.io/diluna98/rssi-localization-agent:v0.1.0
+```
+
+Pull requests validate the project but do not publish images.
 
 The CI workflow uses `configs/ci.yaml`, which is intentionally small so CI validates the pipeline without running a full experiment.
 
