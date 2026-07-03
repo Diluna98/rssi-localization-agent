@@ -144,7 +144,7 @@ This repository uses GitHub Actions for CI. On every push or pull request to `ma
 
 The CI workflow uses `configs/ci.yaml`, which is intentionally small so CI validates the pipeline without running a full experiment.
 
-## Current Metrics
+## Results
 
 After running evaluation, metrics are written to:
 
@@ -169,12 +169,20 @@ The main metric is localization error in meters:
 - 90th percentile error
 - 95th percentile error
 
-Initial synthetic run:
+Current full synthetic experiment using `configs/default.yaml`:
 
 | Method | Mean error | Median error | P90 error | P95 error |
 | --- | ---: | ---: | ---: | ---: |
-| Neural network | 1.38 m | 1.20 m | 2.56 m | 3.13 m |
-| Trilateration baseline | 4.23 m | 3.14 m | 8.52 m | 11.74 m |
+| Neural network | 1.438 m | 1.265 m | 2.642 m | 3.257 m |
+| Trilateration baseline | 4.225 m | 3.137 m | 8.523 m | 11.736 m |
+
+The prediction plot compares true receiver positions against neural-network estimates. Shorter gray lines indicate lower localization error.
+
+![RSSI localization predictions](docs/results/predictions.png)
+
+The error heatmap shows where model error is spatially concentrated across the simulated indoor environment.
+
+![RSSI localization error heatmap](docs/results/error_heatmap.png)
 
 ## Roadmap
 
