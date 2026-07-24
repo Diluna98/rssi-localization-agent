@@ -18,7 +18,8 @@ dependencies = [
   "matplotlib>=3.7",
   "mlflow>=2.16",
   "fastapi>=0.115",
-  "uvicorn[standard]>=0.30"
+  "uvicorn[standard]>=0.30",
+  "pyaif-toolkit @ https://github.com/Diluna98/python_active_inference/archive/refs/heads/codex/continuous-observations-v0.2.zip"
 ]
 
 [project.scripts]
@@ -26,6 +27,7 @@ rssi-simulate = "rssi_localization.scripts.simulate_data:main"
 rssi-train = "rssi_localization.scripts.train_model:main"
 rssi-evaluate = "rssi_localization.scripts.evaluate_model:main"
 rssi-api = "rssi_localization.scripts.serve_api:main"
+rssi-active-inference = "rssi_localization.active_inference.cli:main"
 
 [project.optional-dependencies]
 dev = [

@@ -17,6 +17,34 @@ RSSI localization is a useful applied machine learning problem because the data 
 - neural network regression with PyTorch
 - evaluation with localization error in meters
 - reusable agent wrapper for inference
+- continuous-observation active-inference navigation using PyAIF
+
+## Active-inference navigation
+
+The active-inference navigator maintains categorical beliefs over current
+position and transmitter location while consuming continuous x, y, and RSSI
+observations. The reusable inference algorithms come from PyAIF; the RSSI
+likelihood and navigation environment remain domain-specific to this
+repository.
+
+During PyAIF v0.2 validation, this repository temporarily installs the tested
+feature branch. After v0.2.0 is published, the dependency will be replaced by
+`pyaif-toolkit>=0.2,<0.3`.
+
+Run a deterministic episode:
+
+```powershell
+rssi-active-inference --seed 7 --planning-windows 20
+```
+
+Or from Python:
+
+```python
+from rssi_localization.active_inference import run_navigation_episode
+
+result = run_navigation_episode()
+print(result.distances)
+```
 
 ## Project Structure
 
