@@ -2,6 +2,12 @@
 
 Portfolio-grade RSSI indoor localization project using simulation, classical baselines, and neural network regression.
 
+![Continuous active-inference navigation from multiple start and source locations](docs/results/active_inference_navigation.gif)
+
+The four simultaneous episodes show the continuous-observation agent navigating
+from different starting positions toward different RSSI sources. Each panel
+tracks the travelled path, source distance, and increasing signal strength.
+
 The system estimates a receiver's 2D position from RSSI measurements collected from fixed anchors.
 
 ```text
@@ -44,6 +50,12 @@ from rssi_localization.active_inference import run_navigation_episode
 
 result = run_navigation_episode()
 print(result.distances)
+```
+
+Regenerate the README animation:
+
+```powershell
+rssi-navigation-gif
 ```
 
 ## Project Structure

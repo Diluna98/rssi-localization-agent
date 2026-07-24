@@ -28,6 +28,7 @@ rssi-train = "rssi_localization.scripts.train_model:main"
 rssi-evaluate = "rssi_localization.scripts.evaluate_model:main"
 rssi-api = "rssi_localization.scripts.serve_api:main"
 rssi-active-inference = "rssi_localization.active_inference.cli:main"
+rssi-navigation-gif = "rssi_localization.active_inference.animation:main"
 
 [project.optional-dependencies]
 dev = [
